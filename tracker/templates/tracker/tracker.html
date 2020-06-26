@@ -4,18 +4,6 @@
 
 {% block statics %}
 	<link rel="stylesheet" href="{% static 'tracker/tracker.css' %}">
-	<!-- Include Handlebars from a CDN -->
-	<script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"></script>
-	<!-- Handlebars template for a new table row -->
-	<script id="new-creature" type="text/x-handlebars-template">
-		<tr class="creature">
-			<td><input type="checkbox" name="num"></td>
-			<td>Initiative</td>
-			<td>Name</td>
-			<td><input type="text" class="hp-box"> / <input type="text" class="hp-box"></td>
-			<td><input type="text" class="notes-box" placeholder="Notes"></td>
-		</tr>
-	</script>
 	<script src="{% static 'tracker/tracker.js' %}"></script>
 {% endblock %}
 
