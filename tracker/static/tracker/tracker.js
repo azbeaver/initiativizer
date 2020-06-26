@@ -1,25 +1,37 @@
 // Creature template
 const creatureTemplate =
-	'<tr class="creature" onclick="edit(this)">\n'
+	'<tr class="creature">\n'
 		+ '\t<td><input type="checkbox" name="num"></td>\n'
-		+ '\t<td><p>Initiative</p></td>\n'
-		+ '\t<td><p>Name</p></td>\n'
+		+ '\t<td onclick="edit(this)"><p>Initiative</p></td>\n'
+		+ '\t<td onclick="edit(this)"><p>Name</p></td>\n'
 		+ '\t<td><input type="text" class="hp-box"> / <input type="text" class="hp-box"></td>\n'
 		+ '\t<td><input type="text" class="notes-box" placeholder="Notes"></td>\n'
 	+ '</tr>';
 
-// Function to put a creature into "edit mode" by clicking on it
-function edit(creature) {
-	console.log(creature);
-	var elements = creature.children;
+// Global variable for element being edited
+var elementEditing = null;
+// Global variable indicating when "edit mode" is on - false by default
+var isEditing = false;
 
-	for(i = 0; i < elements.length; i++) {
-		let element = elements[i].firstChild;
-		if(element.tagName === 'P') {
-			let text = element.firstChild.textContent;
-			elements[i].innerHTML = '<input type="text" value="' + text + '" >';
-		}
+// Function to put an individual into "edit mode" by clicking on it
+function edit(element) {
+	// this function only applies when edit mode is not on
+	if(isEditing) {
+		return;
 	}
+	
+	if(elementEditing != null) {
+		stopEditing(elementEditing);
+	}
+	elementEditing = element;
+
+	let text = element.firstChild.textContent;
+	element.innerHTML = '<input type="text" value="' + text + '" >';
+}
+
+function stopEditing(element) {
+	let text = element.firstChild.value;
+	element.innerHTML = '<p>' + text + '</p>';
 }
 
 document.addEventListener('DOMContentLoaded', () => {
