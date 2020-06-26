@@ -1,7 +1,7 @@
 // Creature template
 const creatureTemplate =
 	'<tr class="creature">\n'
-		+ '\t<td><input type="checkbox" name="num"></td>\n'
+		+ '\t<td><input type="checkbox"></td>\n'
 		+ '\t<td onclick="edit(this)"><p>Initiative</p></td>\n'
 		+ '\t<td onclick="edit(this)"><p>Name</p></td>\n'
 		+ '\t<td><input type="text" class="hp-box"> / <input type="text" class="hp-box"></td>\n'
@@ -10,12 +10,12 @@ const creatureTemplate =
 
 // Global variable for element being edited
 var elementEditing = null;
-// Global variable indicating when "edit mode" is on - false by default
+// Global variable indicating when "edit state" is on - false by default
 var isEditing = false;
 
-// Function to put an individual into "edit mode" by clicking on it
+// Function to put an individual into "edit state" by clicking on it
 function edit(element) {
-	// this function only applies when edit mode is not on
+	// this function only applies when edit state is not on
 	if(isEditing) {
 		return;
 	}
@@ -29,7 +29,7 @@ function edit(element) {
 }
 
 function stopEditing(element) {
-	if(elementEditing === null) {
+	if(element === null) {
 		return;
 	}
 
@@ -40,34 +40,49 @@ function stopEditing(element) {
 	};
 }
 
+function makeDefaultState() {
+	stopEditing(elementEditing);
+	elementEditing = null;
+}
+
 document.addEventListener('DOMContentLoaded', () => {
 	
-	// Exit edit mode for an element when body is clicked
-	document.body.onclick = element => {
-		if(element.srcElement.tagName === 'BODY') {
-			stopEditing(elementEditing);
-			elementEditing = null;
+	// Exit edit state for an element when body is clicked
+	document.body.onclick = srcEvent => {
+		if(srcEvent.srcElement.tagName === 'BODY') {
+			makeDefaultState();
 		}
+	};
+
+	// Select all creatures checkbox
+	document.querySelector('#select-all').onclick = srcEvent => {
+		makeDefaultState();
+		
+		var creatures = document.querySelectorAll('.creature');
+		creatures.forEach( creature => {
+			creature.children[0].firstElementChild.checked = srcEvent.srcElement.checked;
+		});
 	};
 
 	// Add a new creature based on the template when add button clicked
 	document.querySelector('#add').onclick = () => {
-		stopEditing(elementEditing);
-		elementEditing = null;
+		makeDefaultState();
+
 		const creature = creatureTemplate;
 		document.querySelector('#creatures').innerHTML += creature;	
 	};
 
 	// Delete selected creatures when delete button is clicked
 	document.querySelector('#delete').onclick = () => {
-		stopEditing(elementEditing);
-		elementEditing = null;
+		makeDefaultState();
+		document.querySelector('#select-all').checked = false;
+
 		var creatures = document.querySelectorAll('.creature');
 		creatures.forEach( creature => {
 			if(creature.children[0].firstElementChild.checked) {
 				creature.remove();
 			}
-		});
-	};	
+		});	
+	};
 
 });
