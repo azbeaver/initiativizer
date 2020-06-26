@@ -20,30 +20,48 @@ function edit(element) {
 		return;
 	}
 	
-	if(elementEditing != null) {
-		stopEditing(elementEditing);
-	}
+	stopEditing(elementEditing);
 	elementEditing = element;
 
 	let text = element.firstChild.textContent;
 	element.innerHTML = '<input type="text" value="' + text + '" >';
+	element.onclick = '';
 }
 
 function stopEditing(element) {
+	if(elementEditing === null) {
+		return;
+	}
+
 	let text = element.firstChild.value;
 	element.innerHTML = '<p>' + text + '</p>';
+	element.onclick = () => {
+		edit(element);
+	};
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+	
+	// Exit edit mode for an element when body is clicked
+	document.body.onclick = element => {
+		if(element.srcElement.tagName === 'BODY') {
+			stopEditing(elementEditing);
+			elementEditing = null;
+		}
+	};
 
 	// Add a new creature based on the template when add button clicked
 	document.querySelector('#add').onclick = () => {
+		stopEditing(elementEditing);
+		elementEditing = null;
 		const creature = creatureTemplate;
 		document.querySelector('#creatures').innerHTML += creature;	
 	};
 
 	// Delete selected creatures when delete button is clicked
 	document.querySelector('#delete').onclick = () => {
+		stopEditing(elementEditing);
+		elementEditing = null;
 		var creatures = document.querySelectorAll('.creature');
 		creatures.forEach( creature => {
 			if(creature.children[0].firstElementChild.checked) {
